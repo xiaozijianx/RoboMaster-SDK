@@ -17,10 +17,10 @@ def disfromcolor(BGR,BGR0):
 def nearcolor(BGR):
     Green_BGR = np.array([80,110,25])
     Red_BGR = np.array([25,85,230])
-    Blue_BGR = np.array([20,20,20])
+    Black_BGR = np.array([20,20,20])
     dis1 = disfromcolor(BGR, Green_BGR)
     dis2 = disfromcolor(BGR, Red_BGR)
-    dis3 = disfromcolor(BGR, Blue_BGR)
+    dis3 = disfromcolor(BGR, Black_BGR)
     if dis1 <= dis2:
         if dis1 <= dis3:
             return 0.
@@ -124,20 +124,20 @@ def video2matrix(img, tag_id, observed_size, a):
                             if count1s >= count3s:
                                 matrixc[i,j] = 0
                                 text = str(int(matrixc[i,j]))
-                                cv2.putText(img,text,(int(x0),int(y0)),cv2.FONT_HERSHEY_PLAIN,1.0,(0,0,255),1)
+                                cv2.putText(img,text,(int(x0),int(y0)),cv2.FONT_HERSHEY_PLAIN,2.0,(0,0,255),1)
                             else:
                                 matrixc[i,j] = 2
                                 text = str(int(matrixc[i,j]))
-                                cv2.putText(img,text,(int(x0),int(y0)),cv2.FONT_HERSHEY_PLAIN,1.0,(0,0,255),1)
+                                cv2.putText(img,text,(int(x0),int(y0)),cv2.FONT_HERSHEY_PLAIN,2.0,(0,0,255),1)
                         else:
                             if count2s >= count3s:
                                 matrixc[i,j] = 1
                                 text = str(int(matrixc[i,j]))
-                                cv2.putText(img,text,(int(x0),int(y0)),cv2.FONT_HERSHEY_PLAIN,1.0,(0,0,255),1)
+                                cv2.putText(img,text,(int(x0),int(y0)),cv2.FONT_HERSHEY_PLAIN,2.0,(0,0,255),1)
                             else:
                                 matrixc[i,j] = 2
                                 text = str(int(matrixc[i,j]))
-                                cv2.putText(img,text,(int(x0),int(y0)),cv2.FONT_HERSHEY_PLAIN,1.0,(0,0,255),1) 
+                                cv2.putText(img,text,(int(x0),int(y0)),cv2.FONT_HERSHEY_PLAIN,2.0,(0,0,255),1) 
                     else:#然后判断四周
                         x = x0 - xrange + i * xrange
                         y = y0 - yrange + j * yrange
@@ -166,27 +166,29 @@ def video2matrix(img, tag_id, observed_size, a):
                                     if count1s >= count3s:
                                         matrixc[i,j] = 0
                                         text = str(int(matrixc[i,j]))
-                                        cv2.putText(img,text,(int(x0),int(y0)),cv2.FONT_HERSHEY_PLAIN,1.0,(0,0,255),1)
+                                        cv2.putText(img,text,(int(x),int(y)),cv2.FONT_HERSHEY_PLAIN,2.0,(0,0,255),1)
                                     else:
                                         matrixc[i,j] = 2
                                         text = str(int(matrixc[i,j]))
-                                        cv2.putText(img,text,(int(x0),int(y0)),cv2.FONT_HERSHEY_PLAIN,1.0,(0,0,255),1)
+                                        cv2.putText(img,text,(int(x),int(y)),cv2.FONT_HERSHEY_PLAIN,2.0,(0,0,255),1)
                                 else:
                                     if count2s >= count3s:
                                         matrixc[i,j] = 1
                                         text = str(int(matrixc[i,j]))
-                                        cv2.putText(img,text,(int(x0),int(y0)),cv2.FONT_HERSHEY_PLAIN,1.0,(0,0,255),1)
+                                        cv2.putText(img,text,(int(x),int(y)),cv2.FONT_HERSHEY_PLAIN,2.0,(0,0,255),1)
                                     else:
                                         matrixc[i,j] = 2
                                         text = str(int(matrixc[i,j]))
-                                        cv2.putText(img,text,(int(x0),int(y0)),cv2.FONT_HERSHEY_PLAIN,1.0,(0,0,255),1) 
+                                        cv2.putText(img,text,(int(x),int(y)),cv2.FONT_HERSHEY_PLAIN,2.0,(0,0,255),1) 
             matrixname = "./matrix" + str(tag_id) + ".txt"
+
             np.savetxt(matrixname, matrixc, fmt='%f')
     # print(tag.corners)
     # cv2.imshow("apriltag_test",img)
     # cv2.waitKey()
     # cv2.destroyAllWindows()
     # sys.exit()
+    #sys.exit()
     return img
 
 
@@ -215,8 +217,8 @@ if __name__ == "__main__":
         #get a frame
         ret, frame = cap.read()
         img1 = video2matrix(frame,0,3,3)
-        img2 = video2matrix(frame,0,3,3)
-        img3 = video2matrix(frame,0,3,3)
+        # img2 = video2matrix(frame,0,3,3)
+        # img3 = video2matrix(frame,0,3,3)
 
         cv2.imshow("capture", img1)
 
