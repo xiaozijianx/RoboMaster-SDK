@@ -122,7 +122,7 @@ def rectangle_recognize(img):
     return rectangles
 
 def video2matrix(img):
-    img = cv2.resize(img, (img.shape[1]//2, img.shape[0]//2))
+    #img = cv2.resize(img, (img.shape[1]//2, img.shape[0]//2))
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # 创建一个apriltag检测器
@@ -148,6 +148,13 @@ def video2matrix(img):
         cv2.circle(img, tuple(tag.corners[2].astype(int)), 4,(255,0,0), 2) # right-bottom
         cv2.circle(img, tuple(tag.corners[3].astype(int)), 4,(255,0,0), 2) # left-bottom
 
+    #根据tag的位置识别颜色
+    #宽度
+    
+
+
+
+    # print(tag.corners)
     # cv2.imshow("apriltag_test",img)
     # cv2.waitKey()
     # cv2.destroyAllWindows()
