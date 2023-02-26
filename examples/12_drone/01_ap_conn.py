@@ -19,7 +19,7 @@ from robomaster import robot
 
 if __name__ == '__main__':
     # 如果本地IP 自动获取不正确，手动指定本地IP地址
-    # robomaster.config.LOCAL_IP_STR = "192.168.10.22"
+    #robomaster.config.LOCAL_IP_STR = "192.168.10.2"
     tl_drone = robot.Drone()
     # 初始化
     tl_drone.initialize()

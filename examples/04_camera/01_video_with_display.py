@@ -20,14 +20,15 @@ from robomaster import camera
 
 
 if __name__ == '__main__':
-    ep_robot = robot.Robot()
-    ep_robot.initialize(conn_type="sta")
+    tl_drone = robot.Drone()
+    # 初始化
+    tl_drone.initialize()
 
-    ep_camera = ep_robot.camera
+    tl_camera = tl_drone.camera
 
     # 显示十秒图传
-    ep_camera.start_video_stream(display=True, resolution=camera.STREAM_360P)
+    tl_camera.start_video_stream(display=True)
     time.sleep(10)
-    ep_camera.stop_video_stream()
+    tl_camera.stop_video_stream()
 
-    ep_robot.close()
+    tl_drone.close()

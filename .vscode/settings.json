@@ -1,0 +1,3 @@
+{
+    "cmake.sourceDirectory": "${workspaceFolder}/examples/plaintext_sample_code/RoboMasterEP/stream/decoder/src"
+}

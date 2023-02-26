@@ -20,8 +20,9 @@ if __name__ == '__main__':
 
     multi_drone = multi_robot.MultiDrone()
     # change the robot_num that you want to scan
-    multi_drone.initialize(robot_num=2)
+    multi_drone.initialize(robot_num=1)
     drone_ip_list = multi_drone._get_sn(timeout=10)
+    print(drone_ip_list)
     for sn in drone_ip_list:
         print("scan result: sn:{0}, ip:{1}".format(sn, drone_ip_list[sn]))
 

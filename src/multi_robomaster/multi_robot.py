@@ -296,12 +296,12 @@ class MultiDrone(MultiRobotBase):
     def run(self, *exec_list):
         _groups_exec_dict = {}
         robot_group_host_list = []
-        for robot_group, group_task in exec_list:
+        for robot_group, group_task, task_args in exec_list:
             if robot_group not in self._group_list:
                 raise Exception('Input group', robot_group, 'is not built')
             self.tello_action = multi_module.TelloAction(self._client, self._robot_id_dict, self._robot_sn_dict,
                                                          self._robot_host_dict)
-            exec_thread = threading.Thread(target=group_task, args=(self.tello_action.action_group(robot_group),))
+            exec_thread = threading.Thread(target=group_task, args=(self.tello_action.action_group(robot_group),task_args,))
             _groups_exec_dict[robot_group] = exec_thread
             robot_group_host_list.append(robot_group.robot_group_host_list)
 

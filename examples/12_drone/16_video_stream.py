@@ -15,7 +15,33 @@
 
 import cv2
 from robomaster import robot
+#from shape_recognize import triangle_recognize
 
+def triangle_recognize(img):
+
+   # Convert image to grayscale
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # Apply threshold to the grayscale image
+    _, thresh = cv2.threshold(gray, 125, 255, cv2.THRESH_BINARY)
+
+    # Find contours in the thresholded image
+    contours, hierarchy = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    
+    # Loop through each contour and determine whether it is a triangle
+    triangles = []
+    for cnt in contours:
+        if cv2.contourArea(cnt) > 50 and cv2.contourArea(cnt) < 1000: # set a minimum and maximum area threshold
+            approx = cv2.approxPolyDP(cnt, 0.02 * cv2.arcLength(cnt, True), True)
+            if len(approx) == 3:
+                triangles.append(approx)
+
+    img_copy = img.copy()
+    cv2.drawContours(img_copy, triangles, -1, (0, 0, 0), 2)
+    # cv2.imshow('Identified triangles', img_copy)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+    return img_copy
 
 if __name__ == '__main__':
     tl_drone = robot.Drone()
@@ -27,8 +53,15 @@ if __name__ == '__main__':
     tl_camera.set_fps("high")
     tl_camera.set_resolution("high")
     tl_camera.set_bitrate(6)
+
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out = cv2.VideoWriter('video_save.mp4',fourcc,30,(960,720), True)
+
     for i in range(0, 302):
         img = tl_camera.read_cv2_image()
+        # img_copy = triangle_recognize(img)
+        #print(img.shape)
+        out.write(img)
         cv2.imshow("Drone", img)
         cv2.waitKey(1)
     cv2.destroyAllWindows()

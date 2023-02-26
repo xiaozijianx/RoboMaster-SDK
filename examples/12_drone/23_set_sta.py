@@ -23,7 +23,8 @@ if __name__ == '__main__':
     tl_drone.initialize()
 
     # 切换飞行器WiFi模式为组网模式，指定路由器SSID和密码
-    tl_drone.config_sta(ssid="RoboMaster_SDK_WiFi", password="12341234")
+    #tl_drone.config_sta(ssid="TBSI_AIoT", password="TBSI_AIoT")
+    tl_drone.config_sta(ssid="TBSI_AIoT_1101", password="TBSI_zhcs")
 
     tl_drone.close()
 
