@@ -4,7 +4,7 @@ import sys
 import pupil_apriltags as apriltag     # for windows
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-#from robomaster import robot
+from robomaster import robot
 import json
 import socket
 import time
@@ -125,8 +125,8 @@ def colorjudgementwithouttag(img,x,y,sample_size=3,draw = False):
     count3s = 0
     for m in range(sample_size):
         for n in range(sample_size):
-            x_sample = x +10*(m - int((sample_size-1)//2))
-            y_sample = y +10*(n - int((sample_size-1)//2))
+            x_sample = x +8*(m - int((sample_size-1)//2))
+            y_sample = y +8*(n - int((sample_size-1)//2))
             x_sample,y_sample = size_regular(img.shape,x_sample,y_sample)
             count1s,count2s,count3s = counts_cal(count1s,count2s,count3s,x_sample,y_sample,img)
  
@@ -209,25 +209,25 @@ def videowithtag2matrix(img, tag_id, observed_size):
 def videowithouttag2matrix(img, uav_id,observed_size,  sample_size = 3, dis = 80):
     matrixname = "./matrix.json"
     matrixc = np.zeros([observed_size,observed_size])
-    #无人机位置对应的中心
-    x0 = img.shape[1]/2
-    y0 = img.shape[0]/2
-    #一格的大小
-    xrange = img.shape[1]/10
-    yrange = img.shape[0]/10
-    #投影画面的大小
-    x_size=300
-    y_size=300
-    #计算一格的大小
-    #利用距离tello的fov和距离计算，65.5 82.6上下对称
-    angle1_1 = (65.5/57.3)/2
-    angle1_2 = (65.5/57.3)/2
-    angle2_1 = (82.6/57.3)/2
-    angle2_2 = (82.6/57.3)/2
-    # print(dis * math.tan(angle2))
-    # sys.exit()
-    xrange = 2*img.shape[1]/(dis * math.tan(angle2_1)/x_size*10) #+ img.shape[1]/dis * math.tan(angle2_2)/x_size*10
-    yrange = 2*img.shape[0]/(dis * math.tan(angle1_1)/y_size*10) #+ img.shape[0]/dis * math.tan(angle1_2)/y_size*10
+    #无人机位置对应的中心 四点：右下 553 ,324右上554 ,151  左上 383 ，151
+    x0 = (383 + 554)/2
+    y0 = (151 + 324)/2
+    #一格的大小左下382,287 右下548， 289 右上551 117 左上381 115（x,y）
+    xrange = 550 - 382
+    yrange = 288 - 116
+    # #投影画面的大小
+    # x_size=300
+    # y_size=300
+    # #计算一格的大小
+    # #利用距离tello的fov和距离计算，65.5 82.6上下对称
+    # angle1_1 = (65.5/57.3)/2
+    # angle1_2 = (65.5/57.3)/2
+    # angle2_1 = (82.6/57.3)/2
+    # angle2_2 = (82.6/57.3)/2
+    # # print(dis * math.tan(angle2))
+    # # sys.exit()
+    # xrange = 2*img.shape[1]/(dis * math.tan(angle2_1)/x_size*10) #+ img.shape[1]/dis * math.tan(angle2_2)/x_size*10
+    # yrange = 2*img.shape[0]/(dis * math.tan(angle1_1)/y_size*10) #+ img.shape[0]/dis * math.tan(angle1_2)/y_size*10
 
     for i in range(observed_size):
         for j in range(observed_size):
@@ -267,7 +267,7 @@ if __name__ == "__main__":
     # print(img[352,205])
     # sys.exit()
  
-    # #视频裁剪
+    # #视频裁剪###########################################################
     # cap = cv2.VideoCapture('./video_save.mp4')
     # fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     # out = cv2.VideoWriter('video.mp4',fourcc,30,(960,720),True)
@@ -286,11 +286,11 @@ if __name__ == "__main__":
 
     # sys.exit()
 
-    # #视频测试有tag
+    # #视频测试有tag#############################################
     # # #建立链接
     # # send_thread0 = threading.Thread(target=send_data, args=(IP_ADDRESS, PORT0, FILENAME0,))
     # # send_thread0.start()
-    # cap = cv2.VideoCapture('./video.mp4')
+    # cap = cv2.VideoCapture('./video_save.mp4')
 
     # while cap.isOpened():
     #     #get a frame
@@ -317,58 +317,65 @@ if __name__ == "__main__":
     # # send_thread0.join()
 
 
-    # #无人机飞行测试
-    # tl_drone = robot.Drone()
-    # tl_drone.initialize()
+    #无人机飞行测试######################################################3
+    tl_drone = robot.Drone()
+    tl_drone.initialize()
 
-    # tl_camera = tl_drone.camera
-    # # 显示302帧图传
-    # tl_camera.start_video_stream(display=False)
-    # tl_camera.set_fps("high")
-    # tl_camera.set_resolution("high")
-    # tl_camera.set_bitrate(6)
+    tl_camera = tl_drone.camera
+    # 显示302帧图传
+    tl_camera.start_video_stream(display=False)
+    tl_camera.set_fps("high")
+    tl_camera.set_resolution("high")
+    tl_camera.set_bitrate(6)
 
-    # for i in range(0, 1000):
-    #     img = tl_camera.read_cv2_image()
-    #     # img_copy = triangle_recognize(img)
-    #     #print(img.shape)
-    #     img1 = video2matrix(img,0,3,3)
+    for i in range(0, 1000):
+        img = tl_camera.read_cv2_image()
+        # img_copy = triangle_recognize(img)
+        #print(img.shape)
+        img1,_ = videowithouttag2matrix(img,0,3,3)
 
-    #     # out.write(img)
-    #     cv2.imshow("Drone", img1)
-    #     cv2.waitKey(1)
-    # cv2.destroyAllWindows()
-    # tl_camera.stop_video_stream()
-
-    # tl_drone.close()
-
-
-    #视频测试无tag
-    # #建立链接
-    # send_thread0 = threading.Thread(target=send_data, args=(IP_ADDRESS, PORT0, FILENAME0,))
-    # send_thread0.start()
-    cap = cv2.VideoCapture('./video.mp4')
-
-    while cap.isOpened():
-        #get a frame
-        ret, frame = cap.read()
-        # #采集颜色并截图
-        # print(frame[330,387])
-        # print(frame[256,400])
-        # print(frame[249,131])
-        # print(frame[319,28])
-        # cv2.imwrite('test.jpg',frame)
-        # sys.exit()
-        if (frame is not None):
-            img1,_ = videowithouttag2matrix(frame,0,3,3)
-            # img2 = videowithtag2matrix(frame,1,3)
-            # img3 = videowithtag2matrix(frame,2,3)
-            cv2.imshow("capture", img1)
-        else:
-            break
-        if cv2.waitKey(30) & 0xFF == ord('q'):
-            break
-    print('播放完毕')
-    cap.release()
+        # out.write(img)
+        cv2.imshow("Drone", img1)
+        cv2.waitKey(1)
     cv2.destroyAllWindows()
-    # send_thread0.join()
+    tl_camera.stop_video_stream()
+
+    tl_drone.close()
+
+
+    # #视频测试无tag,也可以截图############################################3
+    # # #建立链接
+    # # send_thread0 = threading.Thread(target=send_data, args=(IP_ADDRESS, PORT0, FILENAME0,))
+    # # send_thread0.start()
+    # cap = cv2.VideoCapture('./video_save.mp4')
+    # i = 0
+    # while cap.isOpened():
+    #     #get a frame
+    #     ret, frame = cap.read()
+    #     # #采集颜色并截图
+    #     # print(frame[330,387])
+    #     # print(frame[256,400])
+    #     # print(frame[249,131])
+    #     # print(frame[319,28])
+    #     # cv2.imwrite('test.jpg',frame)
+    #     # sys.exit()
+    #     # if ret:
+    #     #     i +=1
+    #     #     print('i=',i)
+    #     #     if i == 200:
+    #     #         comb_file = './test/picturecenter.png'
+    #     #         cv2.imencode('.png', frame)[1].tofile(comb_file)
+    #     #         sys.exit()
+    #     if (frame is not None):   
+    #         img1,_ = videowithouttag2matrix(frame,0,3,3)
+    #         # img2 = videowithtag2matrix(frame,1,3)
+    #         # img3 = videowithtag2matrix(frame,2,3)
+    #         cv2.imshow("capture", img1)
+    #     else:
+    #         break
+    #     if cv2.waitKey(30) & 0xFF == ord('q'):
+    #         break
+    # print('播放完毕')
+    # cap.release()
+    # cv2.destroyAllWindows()
+    # # send_thread0.join()
