@@ -57,7 +57,7 @@ if __name__ == '__main__':
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     out = cv2.VideoWriter('video_save.mp4',fourcc,30,(960,720), True)
 
-    for i in range(0, 302):
+    for i in range(0, 502):
         img = tl_camera.read_cv2_image()
         # img_copy = triangle_recognize(img)
         #print(img.shape)
