@@ -206,7 +206,7 @@ def videowithtag2matrix(img, tag_id, observed_size):
     writematrix2json(matrixname, matrixc)
     return img, matrixname
 
-def videowithouttag2matrix(img, uav_id,observed_size,  sample_size = 3, dis = 200):
+def videowithouttag2matrix(img, uav_id,observed_size,  sample_size = 3, dis = 80):
     matrixname = "./matrix.json"
     matrixc = np.zeros([observed_size,observed_size])
     #无人机位置对应的中心
@@ -220,13 +220,14 @@ def videowithouttag2matrix(img, uav_id,observed_size,  sample_size = 3, dis = 20
     y_size=300
     #计算一格的大小
     #利用距离tello的fov和距离计算，65.5 82.6上下对称
-    angle1 = (65.5/57.3)/2
-    angle2 = (82.6/57.3)/2
+    angle1_1 = (65.5/57.3)/2
+    angle1_2 = (65.5/57.3)/2
+    angle2_1 = (82.6/57.3)/2
+    angle2_2 = (82.6/57.3)/2
     # print(dis * math.tan(angle2))
     # sys.exit()
-    xrange = img.shape[1]/(((2*(dis * math.tan(angle2)))/x_size)*10)
-    yrange = img.shape[0]/(((2*(dis * math.tan(angle1)))/y_size)*10)
-
+    xrange = 2*img.shape[1]/(dis * math.tan(angle2_1)/x_size*10) #+ img.shape[1]/dis * math.tan(angle2_2)/x_size*10
+    yrange = 2*img.shape[0]/(dis * math.tan(angle1_1)/y_size*10) #+ img.shape[0]/dis * math.tan(angle1_2)/y_size*10
 
     for i in range(observed_size):
         for j in range(observed_size):
