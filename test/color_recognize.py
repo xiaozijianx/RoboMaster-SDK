@@ -5,19 +5,8 @@ import pupil_apriltags as apriltag     # for windows
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from robomaster import robot
-import json
-import socket
 import time
-import threading
-import math
-
-# IP_ADDRESS = '192.168.0.2'
-# PORT0 = 12340
-# PORT1 = 12341
-# PORT2 = 12342
-# FILENAME0 = './matrix0.json'
-# FILENAME1 = './matrix1.json'
-# FILENAME2 = './matrix2.json'
+from client import writematrix2json
 
 #计算颜色距离
 def disfromcolor(BGR,BGR0):
@@ -46,11 +35,7 @@ def nearcolor(BGR):
         else:
             return 1.
         
-#向json中写入文件
-def writematrix2json(dir,matrix):
-    matrix_list = matrix.tolist()
-    with open(dir,'w') as f:
-        json.dump(matrix_list,f)
+
 
 def size_regular(img_shape,x,y):
     if x > img_shape[1]-1:
@@ -210,11 +195,12 @@ def videowithouttag2matrix(img, uav_id,observed_size,  sample_size = 3, dis = 80
     matrixname = "./matrix.json"
     matrixc = np.zeros([observed_size,observed_size])
     #无人机位置对应的中心 四点：右下 553 ,324右上554 ,151  左上 383 ，151
-    x0 = (383 + 554)/2
-    y0 = (151 + 324)/2
+    #距离幕布 190cm， 投影宽度230cm 四点：右下 541 ,299右上 541 ,184  左上 430 ，184
+    x0 = (430 + 541)/2
+    y0 = (184 + 299)/2
     #一格的大小左下382,287 右下548， 289 右上551 117 左上381 115（x,y）
-    xrange = 550 - 382
-    yrange = 288 - 116
+    xrange = 541 - 430
+    yrange = 299 - 184
     # #投影画面的大小
     # x_size=300
     # y_size=300
@@ -241,25 +227,8 @@ def videowithouttag2matrix(img, uav_id,observed_size,  sample_size = 3, dis = 80
     writematrix2json(matrixname, matrixc)
     return img, matrixname
 
-# #定义发送端线程函数
-# def send_data(IP_ADDRESS, PORT, FILENAME):
-#     while True:
-#         #Read data from file
-#         with open(FILENAME,'R') as f:
-#             data = json.load(f)
-
-#         #Serialize data to JSON and send over socket
-#         serialized_data = json.dumps(data).encode()
-#         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-#             s.connect((IP_ADDRESS, PORT))
-#             s.sendall(serialized_data)
-
-#         #wait for some time before sending next update
-#         time.sleep(1)
-
-
 if __name__ == "__main__":
-    # img = cv2.imread('./picture.png')
+    # img = cv2.imread('./picture1.png')
     # print(img.shape)
     # print(img[48,155])
     # print(img[106,136])
@@ -286,10 +255,16 @@ if __name__ == "__main__":
 
     # sys.exit()
 
-    # #视频测试有tag#############################################
-    # # #建立链接
-    # # send_thread0 = threading.Thread(target=send_data, args=(IP_ADDRESS, PORT0, FILENAME0,))
-    # # send_thread0.start()
+    #视频测试有tag#############################################
+    # #建立链接
+    # # Create threads for sending and receiving data
+    # receive_thread0 = threading.Thread(target=receive_command, args=(filename0,PORT0,))
+    # receive_thread1 = threading.Thread(target=receive_command, args=(filename1,PORT1,))
+    # receive_thread2 = threading.Thread(target=receive_command, args=(filename2,PORT2,))
+
+    # stop_sending = False
+    # send_thread0 = threading.Thread(target=send_data, args=(IP_ADDRESS, PORT0, FILENAME0,))
+    # send_thread0.start()
     # cap = cv2.VideoCapture('./video_save.mp4')
 
     # while cap.isOpened():
@@ -314,7 +289,7 @@ if __name__ == "__main__":
     # print('播放完毕')
     # cap.release()
     # cv2.destroyAllWindows()
-    # # send_thread0.join()
+    # send_thread0.join()
 
 
     #无人机飞行测试######################################################3
@@ -328,7 +303,7 @@ if __name__ == "__main__":
     tl_camera.set_resolution("high")
     tl_camera.set_bitrate(6)
 
-    for i in range(0, 1000):
+    for i in range(0, 2000):
         img = tl_camera.read_cv2_image()
         # img_copy = triangle_recognize(img)
         #print(img.shape)
@@ -363,7 +338,7 @@ if __name__ == "__main__":
     #     #     i +=1
     #     #     print('i=',i)
     #     #     if i == 200:
-    #     #         comb_file = './test/picturecenter.png'
+    #     #         comb_file = './test/picture1.png'
     #     #         cv2.imencode('.png', frame)[1].tofile(comb_file)
     #     #         sys.exit()
     #     if (frame is not None):   
